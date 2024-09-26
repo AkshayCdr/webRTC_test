@@ -4,21 +4,69 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>WebRTC ICE Candidate Demo</title>
-        <style></style>
+        <style>
+            * {
+                padding: 0;
+                margin: 0;
+            }
+            .main-page {
+                display: flex;
+                width: 100vw;
+                height: 100vh;
+            }
+
+            .remote-stream-section,
+            .local-stream-section {
+                display: flex;
+                /* background-color: red; */
+                padding: 20px;
+                width: 50%;
+                border-right: 4px solid black;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .video-container {
+                display: flex;
+                background-color: black;
+                /* justify-content: center; */
+
+                /* align-items: center; */
+                width: 300px;
+                height: 300px;
+
+                padding: 30px;
+                margin: 20px;
+            }
+
+            #setRemoteOffer,
+            #createOffer {
+                width: 100px;
+                height: 50px;
+                font-size: large;
+
+                color: white;
+
+                background-color: black;
+
+                border-radius: 10px;
+            }
+
+            .input-area {
+                width: 300px;
+                height: 100px;
+            }
+        </style>
     </head>
     <body>
-        <div>
-            <div>
+        <main class="main-page">
+            <section class="local-stream-section">
                 <h1>Local Video</h1>
+
+                <div class="video-container">
+                    <video id="localStream" autoplay playsinline muted></video>
+                </div>
                 <div>
-                    <div>
-                        <video
-                            id="localStream"
-                            autoplay
-                            playsinline
-                            muted
-                        ></video>
-                    </div>
                     <button id="createOffer">Create Offer</button>
                     <textarea
                         name="localOffer"
@@ -26,13 +74,15 @@
                         placeholder="local offer"
                         style="height: 100px; width: 300px"
                     ></textarea>
-                    <textarea
-                        name="localIceCandidates"
-                        id="localIceCandidates"
-                        placeholder="local iceCandidates"
-                        style="height: 100px; width: 300px"
-                    ></textarea>
+                </div>
+                <textarea
+                    name="localIceCandidates"
+                    id="localIceCandidates"
+                    placeholder="local iceCandidates"
+                    style="height: 100px; width: 300px"
+                ></textarea>
 
+                <div>
                     <textarea
                         name=""
                         id="remoteAnswer"
@@ -42,44 +92,10 @@
 
                     <button id="setRemoteAnswer">set remote answer</button>
                 </div>
-
-                <div>
-                    <textarea
-                        name=""
-                        id="remoteOffer"
-                        placeholder="remote Offer"
-                        style="height: 100px; width: 300px"
-                    ></textarea>
-                    <textarea
-                        name=""
-                        id="remoteIceCandidate"
-                        placeholder="remote ice candidates"
-                        style="height: 100px; width: 300px"
-                    ></textarea>
-
-                    <textarea
-                        name=""
-                        id="answer"
-                        placeholder="answer"
-                        style="height: 100px; width: 300px"
-                    ></textarea>
-
-                    <textarea name="" id=""></textarea>
-
-                    <div>
-                        <button id="setRemoteOffer">set remote offer</button>
-                    </div>
-
-                    <div>
-                        <button id="setRemoteIceCandidate">
-                            set remote ice candidate
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div>
+            </section>
+            <section class="remote-stream-section">
                 <h1>Remote stream</h1>
-                <div>
+                <div class="video-container">
                     <video
                         src=""
                         id="remoteStream"
@@ -88,9 +104,38 @@
                         muted
                     ></video>
                 </div>
-                <button></button>
-            </div>
-        </div>
+
+                <div>
+                    <textarea
+                        name=""
+                        id="remoteOffer"
+                        placeholder="remote Offer"
+                        style="height: 100px; width: 300px"
+                    ></textarea>
+
+                    <button id="setRemoteOffer">set remote offer</button>
+                </div>
+
+                <div>
+                    <textarea
+                        name=""
+                        id="remoteIceCandidate"
+                        placeholder="remote ice candidates"
+                        style="height: 100px; width: 300px"
+                    ></textarea>
+
+                    <button id="setRemoteIceCandidate">
+                        set remote ice candidate
+                    </button>
+                </div>
+                <textarea
+                    name=""
+                    id="answer"
+                    placeholder="answer"
+                    style="height: 100px; width: 300px"
+                ></textarea>
+            </section>
+        </main>
         <script>
             const peerConfiguration = {
                 iceServers: [
