@@ -19,6 +19,9 @@
             .local-stream-section {
                 display: flex;
                 /* background-color: red; */
+
+                justify-content: center;
+                align-items: center;
                 padding: 20px;
                 width: 50%;
                 border-right: 4px solid black;
@@ -28,10 +31,11 @@
 
             .video-container {
                 display: flex;
-                background-color: black;
-                /* justify-content: center; */
+                /* background-color: black; */
+                border: 2px solid black;
+                /* justify-content: center;
 
-                /* align-items: center; */
+                align-items: center; */
                 width: 300px;
                 height: 300px;
 
@@ -39,10 +43,12 @@
                 margin: 20px;
             }
 
+            #setRemoteIceCandidate,
+            #setRemoteAnswer,
             #setRemoteOffer,
             #createOffer {
                 width: 100px;
-                height: 50px;
+                height: 70px;
                 font-size: large;
 
                 color: white;
@@ -53,8 +59,22 @@
             }
 
             .input-area {
-                width: 300px;
+                width: 500px;
                 height: 100px;
+            }
+            .sdp-section {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+
+                /* background-color: red; */
+            }
+
+            .input-container {
+                display: flex;
+
+                align-items: center;
+                gap: 10px;
             }
         </style>
     </head>
@@ -66,31 +86,33 @@
                 <div class="video-container">
                     <video id="localStream" autoplay playsinline muted></video>
                 </div>
-                <div>
-                    <button id="createOffer">Create Offer</button>
+                <div class="sdp-section">
+                    <div class="input-container">
+                        <button id="createOffer">Create Offer</button>
+                        <textarea
+                            name="localOffer"
+                            id="localOffer"
+                            placeholder="local offer"
+                            class="input-area"
+                        ></textarea>
+                    </div>
                     <textarea
-                        name="localOffer"
-                        id="localOffer"
-                        placeholder="local offer"
-                        style="height: 100px; width: 300px"
-                    ></textarea>
-                </div>
-                <textarea
-                    name="localIceCandidates"
-                    id="localIceCandidates"
-                    placeholder="local iceCandidates"
-                    style="height: 100px; width: 300px"
-                ></textarea>
-
-                <div>
-                    <textarea
-                        name=""
-                        id="remoteAnswer"
-                        placeholder="remote answer"
-                        style="height: 100px; width: 300px"
+                        name="localIceCandidates"
+                        id="localIceCandidates"
+                        placeholder="local iceCandidates"
+                        class="input-area"
                     ></textarea>
 
-                    <button id="setRemoteAnswer">set remote answer</button>
+                    <div class="input-container">
+                        <button id="setRemoteAnswer">set remote answer</button>
+
+                        <textarea
+                            name=""
+                            id="remoteAnswer"
+                            placeholder="remote answer"
+                            class="input-area"
+                        ></textarea>
+                    </div>
                 </div>
             </section>
             <section class="remote-stream-section">
@@ -105,35 +127,37 @@
                     ></video>
                 </div>
 
-                <div>
+                <div class="sdp-section">
+                    <div class="input-container">
+                        <textarea
+                            name=""
+                            id="remoteOffer"
+                            placeholder="remote Offer"
+                            class="input-area"
+                        ></textarea>
+
+                        <button id="setRemoteOffer">set remote offer</button>
+                    </div>
+
+                    <div class="input-container">
+                        <textarea
+                            name=""
+                            id="remoteIceCandidate"
+                            placeholder="remote ice candidates"
+                            class="input-area"
+                        ></textarea>
+
+                        <button id="setRemoteIceCandidate">
+                            set remote ice candidate
+                        </button>
+                    </div>
                     <textarea
                         name=""
-                        id="remoteOffer"
-                        placeholder="remote Offer"
-                        style="height: 100px; width: 300px"
+                        id="answer"
+                        placeholder="answer"
+                        class="input-area"
                     ></textarea>
-
-                    <button id="setRemoteOffer">set remote offer</button>
                 </div>
-
-                <div>
-                    <textarea
-                        name=""
-                        id="remoteIceCandidate"
-                        placeholder="remote ice candidates"
-                        style="height: 100px; width: 300px"
-                    ></textarea>
-
-                    <button id="setRemoteIceCandidate">
-                        set remote ice candidate
-                    </button>
-                </div>
-                <textarea
-                    name=""
-                    id="answer"
-                    placeholder="answer"
-                    style="height: 100px; width: 300px"
-                ></textarea>
             </section>
         </main>
         <script>
@@ -179,6 +203,7 @@
                         await navigator.mediaDevices.getUserMedia({
                             video: true,
                             audio: true,
+                            video: { width: 300, height: 300 },
                         });
                     localVedioElement.srcObject = localStream;
 
