@@ -164,6 +164,11 @@
                         };
                     };
 
+                    peerConnection.ontrack = (e) => {
+                        const [data] = e.streams;
+                        remoteVedioElement.srcObject = data;
+                    };
+
                     peerConnection.onicecandidate = (e) => {
                         console.log("ICE candidate found");
                         console.log(e);
