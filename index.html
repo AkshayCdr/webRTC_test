@@ -153,6 +153,30 @@
                         console.log(e.data);
                     };
 
+                    peerConnection.connectionState = (e) => {
+                        switch (peerConnection.connectionState) {
+                            case "new":
+                            case "connecting":
+                                alertStatus("Connecting…");
+                                break;
+                            case "connected":
+                                alertStatus("Online");
+                                break;
+                            case "disconnected":
+                                alertStatus("Disconnecting…");
+                                break;
+                            case "closed":
+                                alertStatus("Offline");
+                                break;
+                            case "failed":
+                                alertStatus("Error");
+                                break;
+                            default:
+                                alertStatus("Unknown");
+                                break;
+                        }
+                    };
+
                     peerConnection.ondatachannel = (e) => {
                         const channel = e.channel;
                         channel.onopen = (e) => {
@@ -173,9 +197,8 @@
                         console.log("ICE candidate found");
                         console.log(e);
                         if (e.candidate) {
-                            localIceCandidate.value += JSON.stringify(
-                                e.candidate
-                            );
+                            localIceCandidate.value +=
+                                JSON.stringify(e.candidate) + "\n";
                         }
                     };
 
@@ -201,19 +224,28 @@
                     btnSetRemoteIceCandidate.addEventListener(
                         "click",
                         async () => {
-                            const iceCandidates = remoteICeCandidate.value;
+                            const iceCandidates =
+                                remoteICeCandidate.value.split("\n");
+
+                            if (!iceCandidates.length) return;
 
                             console.log("ice candidate is ");
                             console.log(iceCandidates);
 
-                            peerConnection
-                                .addIceCandidate(
-                                    new RTCIceCandidate(
-                                        JSON.parse(iceCandidates)
-                                    )
-                                )
-                                .then((ans) => console.log("added ice ", ans))
-                                .catch((err) => console.error(err));
+                            iceCandidates.forEach((candidate) => {
+                                if (candidate) {
+                                    peerConnection
+                                        .addIceCandidate(
+                                            new RTCIceCandidate(
+                                                JSON.parse(candidate)
+                                            )
+                                        )
+                                        .then((ans) =>
+                                            console.log("added ice ", ans)
+                                        )
+                                        .catch((err) => console.error(err));
+                                }
+                            });
                         }
                     );
                 } catch (error) {
@@ -243,6 +275,10 @@
             }
 
             init();
+
+            function alertStatus(status) {
+                alert(status);
+            }
         </script>
     </body>
 </html>
