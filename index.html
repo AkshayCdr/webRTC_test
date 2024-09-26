@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>WebRTC ICE Candidate Demo</title>
+        <style></style>
+    </head>
+    <body>
+        <div>
+            <div>
+                <h1>Local Video</h1>
+                <div>
+                    <div>
+                        <video
+                            id="localStream"
+                            autoplay
+                            playsinline
+                            muted
+                        ></video>
+                    </div>
+                    <button id="createOffer">Create Offer</button>
+                    <textarea
+                        name="localOffer"
+                        id="localOffer"
+                        placeholder="local offer"
+                        style="height: 100px; width: 300px"
+                    ></textarea>
+                    <textarea
+                        name="localIceCandidates"
+                        id="localIceCandidates"
+                        placeholder="local iceCandidates"
+                        style="height: 100px; width: 300px"
+                    ></textarea>
+
+                    <textarea
+                        name=""
+                        id="remoteAnswer"
+                        placeholder="remote answer"
+                        style="height: 100px; width: 300px"
+                    ></textarea>
+
+                    <button id="setRemoteAnswer">set remote answer</button>
+                </div>
+
+                <div>
+                    <textarea
+                        name=""
+                        id="remoteOffer"
+                        placeholder="remote Offer"
+                        style="height: 100px; width: 300px"
+                    ></textarea>
+                    <textarea
+                        name=""
+                        id="remoteIceCandidate"
+                        placeholder="remote ice candidates"
+                        style="height: 100px; width: 300px"
+                    ></textarea>
+
+                    <textarea
+                        name=""
+                        id="answer"
+                        placeholder="answer"
+                        style="height: 100px; width: 300px"
+                    ></textarea>
+
+                    <textarea name="" id=""></textarea>
+
+                    <div>
+                        <button id="setRemoteOffer">set remote offer</button>
+                    </div>
+
+                    <div>
+                        <button id="setRemoteIceCandidate">
+                            set remote ice candidate
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h1>Remote stream</h1>
+                <div>
+                    <video
+                        src=""
+                        id="remoteStream"
+                        autoplay
+                        playsinline
+                        muted
+                    ></video>
+                </div>
+                <button></button>
+            </div>
+        </div>
+        <script>
+            const peerConfiguration = {
+                iceServers: [
+                    {
+                        urls: [
+                            "stun:stun.l.google.com:19302",
+                            "stun:stun1.l.google.com:19302",
+                        ],
+                    },
+                ],
+            };
+            const btnCreateOffer = document.getElementById("createOffer");
+            const offerText = document.getElementById("localOffer");
+            const localIceCandidate =
+                document.getElementById("localIceCandidates");
+            const localVedioElement = document.getElementById("localStream");
+
+            const remoteVedioElement = document.getElementById("remoteStream");
+
+            const remoteICeCandidate =
+                document.getElementById("remoteIceCandidate");
+            const remoteOffer = document.getElementById("remoteOffer");
+
+            const btnSetRemoteAnswer =
+                document.getElementById("setRemoteAnswer");
+
+            const btnSetRemoteIceCandidate = document.getElementById(
+                "setRemoteIceCandidate"
+            );
+            const btnSetRemoteOffer = document.getElementById("setRemoteOffer");
+
+            const answerText = document.getElementById("answer");
+            const remoteAnswer = document.getElementById("remoteAnswer");
+
+            let peerConnection;
+            let dataChannel;
+
+            async function init() {
+                try {
+                    const localStream =
+                        await navigator.mediaDevices.getUserMedia({
+                            video: true,
+                            audio: true,
+                        });
+                    localVedioElement.srcObject = localStream;
+
+                    peerConnection = new RTCPeerConnection(peerConfiguration);
+
+                    localStream.getTracks().forEach((track) => {
+                        peerConnection.addTrack(track, localStream);
+                    });
+
+                    peerConnection.onicecandidate = (e) => {
+                        console.log("ICE candidate found");
+                        console.log(e);
+                        if (e.candidate) {
+                            localIceCandidate.value += JSON.stringify(
+                                e.candidate
+                            );
+                        }
+                    };
+
+                    btnCreateOffer.addEventListener("click", createOffer);
+
+                    btnSetRemoteOffer.addEventListener("click", () => {
+                        console.log("setting remote ice candidate");
+
+                        const offer = remoteOffer.value;
+
+                        if (!offer) return;
+
+                        peerConnection.setRemoteDescription(JSON.parse(offer));
+
+                        peerConnection.createAnswer().then((answer) => {
+                            console.log("answer is ");
+                            console.log(answer);
+                            peerConnection.setLocalDescription(answer);
+                            answerText.value = JSON.stringify(answer) + "\n";
+                        });
+                    });
+
+                    btnSetRemoteIceCandidate.addEventListener(
+                        "click",
+                        async () => {
+                            const iceCandidates = remoteICeCandidate.value;
+
+                            console.log("ice candidate is ");
+                            console.log(iceCandidates);
+
+                            peerConnection
+                                .addIceCandidate(
+                                    new RTCIceCandidate(
+                                        JSON.parse(iceCandidates)
+                                    )
+                                )
+                                .then((ans) => console.log("added ice ", ans))
+                                .catch((err) => console.error(err));
+                        }
+                    );
+                } catch (error) {
+                    console.error("Error initializing:", error);
+                }
+
+                btnSetRemoteAnswer.addEventListener("click", () => {
+                    const answer = remoteAnswer.value;
+
+                    if (!answer) return;
+
+                    peerConnection.setRemoteDescription(JSON.parse(answer));
+                    console.log("remote answer set");
+                });
+            }
+
+            async function createOffer() {
+                try {
+                    const offer = await peerConnection.createOffer();
+                    await peerConnection.setLocalDescription(offer);
+                    offerText.value = JSON.stringify(
+                        peerConnection.localDescription
+                    );
+                } catch (error) {
+                    console.error("Error creating offer:", error);
+                }
+            }
+
+            init();
+        </script>
+    </body>
+</html>
