@@ -143,6 +143,27 @@
                         peerConnection.addTrack(track, localStream);
                     });
 
+                    const channel = peerConnection.createDataChannel("chat");
+
+                    channel.onopen = (e) => {
+                        channel.send("hi me");
+                    };
+
+                    channel.onmessage = (e) => {
+                        console.log(e.data);
+                    };
+
+                    peerConnection.ondatachannel = (e) => {
+                        const channel = e.channel;
+                        channel.onopen = (e) => {
+                            channel.send("hi back");
+                        };
+
+                        channel.onmessage = (e) => {
+                            console.log(e.data);
+                        };
+                    };
+
                     peerConnection.onicecandidate = (e) => {
                         console.log("ICE candidate found");
                         console.log(e);
