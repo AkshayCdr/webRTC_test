@@ -153,8 +153,8 @@
                         <div>
                             <input
                                 type="checkbox"
-                                id="set-remote-answer"
-                                name="set-remote-answer"
+                                id="set-remote-answer-check"
+                                name="set-remote-answer-check"
                             />
                             <label for="horns" id="set-remote-answer-label"
                                 >Set remote answer</label
@@ -164,8 +164,8 @@
                         <div>
                             <input
                                 type="checkbox"
-                                name="set-remote-offer"
-                                id="set-remote-offer"
+                                name="set-remote-offer-check"
+                                id="set-remote-offer-check"
                             />
                             <label for="set-offer" id="set-remote-offer-label"
                                 >set remote Offer</label
@@ -175,11 +175,11 @@
                         <div>
                             <input
                                 type="checkbox"
-                                name="set-remote-icecandidate"
-                                id="set-remote-icecandidate"
+                                name="set-remote-icecandidate-check"
+                                id="set-remote-icecandidate-check"
                             />
 
-                            <label for="set-remote-icecandidate"
+                            <label for="set-remote-icecandidate-label"
                                 >set remote ice candidate</label
                             >
                         </div>
@@ -274,8 +274,28 @@
             const createOfferLabel =
                 document.getElementById("create-offer-label");
 
+            const setRemoteOfferCheck = document.getElementById(
+                "set-remote-offer-check"
+            );
+
             const setRemoteOfferLabel = document.getElementById(
                 "set-remote-offer-label"
+            );
+
+            const setRemoteAnsCheck = document.getElementById(
+                "set-remote-answer-check"
+            );
+
+            const setRemoteAnsLabel = document.getElementById(
+                "set-remote-answer-label"
+            );
+
+            const setRemoteIceCandidateCheck = document.getElementById(
+                "set-remote-icecandidate-check"
+            );
+
+            const setRemoteIceCandidateLabel = document.getElementById(
+                "set-remote-icecandidate-label"
             );
 
             let peerConnection;
@@ -367,12 +387,52 @@
 
                         peerConnection.setRemoteDescription(JSON.parse(offer));
 
-                        peerConnection.createAnswer().then((answer) => {
-                            console.log("answer is ");
-                            console.log(answer);
-                            peerConnection.setLocalDescription(answer);
-                            answerText.value = JSON.stringify(answer) + "\n";
-                        });
+                        peerConnection
+                            .createAnswer()
+                            .then((answer) => {
+                                console.log("answer is ");
+                                console.log(answer);
+                                peerConnection.setLocalDescription(answer);
+                                answerText.value =
+                                    JSON.stringify(answer) + "\n";
+                            })
+                            .then(() => {
+                                //dom man
+
+                                btnSetRemoteOffer.disabled = true;
+
+                                btnSetRemoteOffer.classList.add("blur");
+
+                                btnCreateOffer.disabled = true;
+
+                                btnCreateOffer.classList.add("blur");
+
+                                offerText.disabled = true;
+
+                                offerText.classList.add("blur");
+
+                                btnSetRemoteAnswer.disabled = true;
+
+                                btnSetRemoteAnswer.classList.add("blur");
+
+                                remoteAnswer.disabled = true;
+
+                                remoteAnswer.classList.add("blur");
+
+                                createOfferLabel.classList.add(
+                                    "blur",
+                                    "overline"
+                                );
+
+                                setRemoteAnsLabel.classList.add(
+                                    "blur",
+                                    "overline"
+                                );
+
+                                setRemoteOfferLabel.classList.add("blur");
+
+                                setRemoteOfferCheck.checked = true;
+                            });
                     });
 
                     btnSetRemoteIceCandidate.addEventListener(
@@ -400,6 +460,16 @@
                                         .catch((err) => console.error(err));
                                 }
                             });
+
+                            //dom man
+
+                            btnSetRemoteIceCandidate.disabled = true;
+
+                            btnSetRemoteIceCandidate.classList.add("blur");
+
+                            setRemoteIceCandidateCheck.checked = true;
+
+                            setRemoteIceCandidateLabel.classList.add("blur");
                         }
                     );
                 } catch (error) {
@@ -415,6 +485,13 @@
                     console.log("remote answer set");
 
                     //dom man
+                    btnSetRemoteAnswer.disabled = true;
+
+                    btnSetRemoteAnswer.classList.add("blur");
+
+                    setRemoteAnsCheck.checked = true;
+
+                    setRemoteAnsLabel.classList.add("blur");
                 });
             }
 
