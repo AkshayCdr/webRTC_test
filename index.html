@@ -11,8 +11,8 @@
             }
             .main-page {
                 display: flex;
-                width: 100vw;
-                height: 100vh;
+                /* width: 100vw;
+                height: 100vh; */
             }
 
             .remote-stream-section,
@@ -27,6 +27,7 @@
                 border-right: 4px solid black;
                 flex-direction: column;
                 gap: 20px;
+                height: fit-content;
             }
 
             .video-container {
@@ -76,6 +77,23 @@
                 align-items: center;
                 gap: 10px;
             }
+
+            .checkbox-container {
+                margin: 10px;
+                padding: 10px;
+            }
+
+            .checkbox-container {
+                padding: 10px;
+            }
+
+            .blur {
+                filter: blur(1px);
+            }
+
+            .overline {
+                text-decoration: line-through;
+            }
         </style>
     </head>
     <body>
@@ -114,7 +132,61 @@
                         ></textarea>
                     </div>
                 </div>
+
+                <div class="check-box-section">
+                    <fieldset class="checkbox-container">
+                        <legend style="padding: 10px">Connect to peer</legend>
+
+                        <div>
+                            <input
+                                type="checkbox"
+                                id="create-offer-checkbox"
+                                name="create-offer-checkbox"
+                            />
+                            <label
+                                for="create-offer-checkbox"
+                                id="create-offer-label"
+                                >create offer</label
+                            >
+                        </div>
+
+                        <div>
+                            <input
+                                type="checkbox"
+                                id="set-remote-answer"
+                                name="set-remote-answer"
+                            />
+                            <label for="horns" id="set-remote-answer-label"
+                                >Set remote answer</label
+                            >
+                        </div>
+
+                        <div>
+                            <input
+                                type="checkbox"
+                                name="set-remote-offer"
+                                id="set-remote-offer"
+                            />
+                            <label for="set-offer" id="set-remote-offer-label"
+                                >set remote Offer</label
+                            >
+                        </div>
+
+                        <div>
+                            <input
+                                type="checkbox"
+                                name="set-remote-icecandidate"
+                                id="set-remote-icecandidate"
+                            />
+
+                            <label for="set-remote-icecandidate"
+                                >set remote ice candidate</label
+                            >
+                        </div>
+                    </fieldset>
+                </div>
             </section>
+
             <section class="remote-stream-section">
                 <h1>Remote stream</h1>
                 <div class="video-container">
@@ -193,6 +265,18 @@
 
             const answerText = document.getElementById("answer");
             const remoteAnswer = document.getElementById("remoteAnswer");
+
+            //check boxes
+
+            const createOfferCheck = document.getElementById(
+                "create-offer-checkbox"
+            );
+            const createOfferLabel =
+                document.getElementById("create-offer-label");
+
+            const setRemoteOfferLabel = document.getElementById(
+                "set-remote-offer-label"
+            );
 
             let peerConnection;
             let dataChannel;
@@ -329,16 +413,42 @@
 
                     peerConnection.setRemoteDescription(JSON.parse(answer));
                     console.log("remote answer set");
+
+                    //dom man
                 });
             }
 
             async function createOffer() {
                 try {
                     const offer = await peerConnection.createOffer();
+
                     await peerConnection.setLocalDescription(offer);
                     offerText.value = JSON.stringify(
                         peerConnection.localDescription
                     );
+
+                    //dom man
+                    createOfferCheck.checked = true;
+
+                    btnCreateOffer.disabled = true;
+
+                    btnCreateOffer.classList.add("blur");
+
+                    createOfferLabel.classList.add("blur");
+
+                    setRemoteOfferLabel.classList.add("blur", "overline");
+
+                    remoteOffer.disabled = true;
+
+                    remoteOffer.classList.add("blur");
+
+                    btnSetRemoteOffer.disabled = true;
+
+                    btnSetRemoteOffer.classList.add("blur");
+
+                    answerText.disabled = true;
+
+                    answerText.classList.add("blur");
                 } catch (error) {
                     console.error("Error creating offer:", error);
                 }
