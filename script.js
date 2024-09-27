@@ -145,7 +145,6 @@ const handleSetRemoteAns = () => {
     if (!answer) return;
 
     peerConnection.setRemoteDescription(JSON.parse(answer));
-    console.log("remote answer set");
 
     //dom man
     btnSetRemoteAnswer.disabled = true;
@@ -162,14 +161,10 @@ const handleSetRemoteIceCandidate = async () => {
 
     if (!iceCandidates.length) return;
 
-    console.log("ice candidate is ");
-    console.log(iceCandidates);
-
     iceCandidates.forEach((candidate) => {
         if (candidate) {
             peerConnection
                 .addIceCandidate(new RTCIceCandidate(JSON.parse(candidate)))
-                .then((ans) => console.log("added ice ", ans))
                 .catch((err) => console.error(err));
         }
     });
@@ -186,8 +181,6 @@ const handleSetRemoteIceCandidate = async () => {
 };
 
 const handleSetRemoteOffer = () => {
-    console.log("setting remote ice candidate");
-
     const offer = remoteOffer.value;
 
     if (!offer) return;
@@ -197,8 +190,6 @@ const handleSetRemoteOffer = () => {
     peerConnection
         .createAnswer()
         .then((answer) => {
-            console.log("answer is ");
-            console.log(answer);
             peerConnection.setLocalDescription(answer);
             answerText.value = JSON.stringify(answer) + "\n";
         })
@@ -236,8 +227,6 @@ const handleSetRemoteOffer = () => {
 };
 
 const handleOnIcecandidate = (e) => {
-    console.log("ICE candidate found");
-    console.log(e);
     if (e.candidate) {
         localIceCandidate.value += JSON.stringify(e.candidate) + "\n";
     }
