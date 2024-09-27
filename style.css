@@ -78,6 +78,8 @@
 
 .checkbox-container {
     padding: 10px;
+    width: 400px;
+    background-color: beige;
 }
 
 .blur {
@@ -86,4 +88,23 @@
 
 .overline {
     text-decoration: line-through;
+}
+
+.legend {
+    padding: 10px;
+    font-size: xx-large;
+    background-color: black;
+    color: white;
+    border-radius: 10px;
+}
+
+.label {
+    font-size: 25px;
+    padding: 5px;
+    margin: 5px;
+}
+
+.checkbox {
+    padding: 10px;
+    /* margin: 5px; */
 }
